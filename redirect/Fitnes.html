@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FitTrack - Aplikasi Fitness Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #f72585;
+            --success: #4cc9f0;
+            --dark: #22223b;
+            --light: #f8f9fa;
+            --text: #3a3a3a;
+            --card: #ffffff;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: var(--text);
+            line-height: 1.5;
+            position: relative;
+            overflow-x: hidden;
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f0f2f5 0%, #e1e6f0 100%);
+        }
+
+        .app-container {
+            padding: 15px;
+            padding-bottom: 80px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title i {
+            color: var(--primary);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .stat-icon.primary {
+            background-color: rgba(67, 97, 238, 0.15);
+            color: var(--primary);
+        }
+
+        .stat-icon.secondary {
+            background-color: rgba(247, 37, 133, 0.15);
+            color: var(--secondary);
+        }
+
+        .stat-icon.success {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: var(--success);
+        }
+
+        .stat-icon.dark {
+            background-color: rgba(34, 34, 59, 0.15);
+            color: var(--dark);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.positive {
+            color: #00b894;
+        }
+
+        .stat-change.negative {
+            color: #d63031;
+        }
+
+        /* Workout Card */
+        .workout-card {
+            background-color: var(--primary);
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .workout-card::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .workout-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .workout-description {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .workout-progress {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 65%;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .workout-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--primary);
+            height: 40px;
+            padding: 0 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: none;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Day Navigation */
+        .day-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .day-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .day-name {
+            font-size: 13px;
+            color: #777;
+            text-transform: uppercase;
+        }
+
+        .day-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background-color: var(--card);
+            box-shadow: var(--shadow);
+        }
+
+        .day-item.active .day-name {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .day-item.active .day-number {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Training Section */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .section-title h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-link {
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .training-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .training-card {
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .training-image {
+            position: relative;
+            height: 120px;
+            overflow: hidden;
+            background: linear-gradient(45deg, #4cc9f0, #4361ee);
+        }
+
+        .training-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .training-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+            color: white;
+        }
+
+        .training-level {
+            align-self: flex-end;
+            background: rgba(0,0,0,0.25);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .training-duration {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .training-info {
+            padding: 15px;
+        }
+
+        .training-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .training-body {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .training-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .training-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            padding: 10px 0;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 350px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .training-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-15px);}
+            60% {transform: translateY(-7px);}
+        }
+
+        .workout-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.1);
+        }
+
+        .training-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="header-title">
+                <i class="fas fa-fire"></i>
+                <h1>FitTrack</h1>
+            </div>
+            <div class="avatar">AJ</div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-running"></i>
+                </div>
+                <div class="stat-title">Kalori Hari Ini</div>
+                <div class="stat-value">1,245 Cal</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-caret-up"></i> 8.2%
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon secondary">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="stat-title">Langkah</div>
+                <div class="stat-value">8,230</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-caret-up"></i> 12.5%
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="stat-title">Durasi Tidur</div>
+                <div class="stat-value">7j 35m</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-caret-up"></i> 5.3%
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon dark">
+                    <i class="fas fa-weight"></i>
+                </div>
+                <div class="stat-title">Berat Badan</div>
+                <div class="stat-value">69.8 kg</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-caret-down"></i> 1.1%
+                </div>
+            </div>
+        </div>
+
+        <!-- Workout Card -->
+        <div class="workout-card">
+            <div class="workout-title">Latihan Hari Ini</div>
+            <div class="workout-description">Pemanasan dan Latihan Inti</div>
+            <div class="workout-progress">
+                <div class="progress-label">
+                    <span>35 menit</span>
+                    <span>55 menit</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <button class="workout-button">
+                Lanjutkan Latihan <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Day Navigation -->
+        <div class="day-navigation">
+            <div class="day-item">
+                <span class="day-name">Sen</span>
+                <div class="day-number">16</div>
+            </div>
+            <div class="day-item">
+                <span class="day-name">Sel</span>
+                <div class="day-number">17</div>
+            </div>
+            <div class="day-item">
+                <span class="day-name">Rab</span>
+                <div class="day-number">18</div>
+            </div>
+            <div class="day-item active">
+                <span class="day-name">Kam</span>
+                <div class="day-number">19</div>
+            </div>
+            <div class="day-item">
+                <span class="day-name">Jum</span>
+                <div class="day-number">20</div>
+            </div>
+            <div class="day-item">
+                <span class="day-name">Sab</span>
+                <div class="day-number">21</div>
+            </div>
+            <div class="day-item">
+                <span class="day-name">Min</span>
+                <div class="day-number">22</div>
+            </div>
+        </div>
+
+        <!-- Training Section -->
+        <div class="training-section">
+            <div class="section-title">
+                <h2>Latihan Rekomendasi</h2>
+                <a href="#" class="section-link">Lihat Semua</a>
+            </div>
+
+            <div class="training-grid">
+                <!-- Card 1 -->
+                <div class="training-card">
+                    <div class="training-image">
+                        <div class="training-overlay">
+                            <span class="training-level">Pemula</span>
+                            <span class="training-duration">25m</span>
+                        </div>
+                    </div>
+                    <div class="training-info">
+                        <h3 class="training-name">Latihan Kekuatan Tubuh</h3>
+                        <div class="training-body">
+                            <i class="fas fa-user"></i> Tanpa Alat
+                        </div>
+                        <div class="training-stats">
+                            <div class="training-stat">
+                                <i class="fas fa-fire"></i> 250 Cal
+                            </div>
+                            <div class="training-stat">
+                                <i class="far fa-clock"></i> 3 set
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="training-card">
+                    <div class="training-image">
+                        <div class="training-overlay">
+                            <span class="training-level">Menengah</span>
+                            <span class="training-duration">35m</span>
+                        </div>
+                    </div>
+                    <div class="training-info">
+                        <h3 class="training-name">Cardio Intensitas Tinggi</h3>
+                        <div class="training-body">
+                            <i class="fas fa-running"></i> Kardio
+                        </div>
+                        <div class="training-stats">
+                            <div class="training-stat">
+                                <i class="fas fa-fire"></i> 410 Cal
+                            </div>
+                            <div class="training-stat">
+                                <i class="far fa-clock"></i> 1 set
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-dumbbell"></i>
+                <span>Latihan</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Progres</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Animate stats on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate workout button animation
+            const workoutBtn = document.querySelector('.workout-button');
+            workoutBtn.classList.add('bounce');
+            
+            // Remove animation after 3 seconds
+            setTimeout(() => {
+                workoutBtn.classList.remove('bounce');
+            }, 3000);
+            
+            // Add hover effects
+            const cards = document.querySelectorAll('.training-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'transform 0.3s, box-shadow 0.3s';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transition = '';
+                });
+            });
+            
+            // Day navigation active state
+            const dayItems = document.querySelectorAll('.day-item');
+            dayItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    dayItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
